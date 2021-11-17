@@ -1,8 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "R9/3zKID8F7i2CTHNothDOjAUWQJUDK6d8G9MnhPt36ibbUB1cTJmvLIAE034bgoHu7nFzpej+F/MuIiL1KkRg==",
+  "dgSpecHash": "BXxz9nrskBcTbyWhdO2G/JJbDKrStsSjfOcnYFe2LyMjTY5qfuLInsQfASheRmKi0E9BI/7I+cuEM+bwHl9FJA==",
   "success": true,
   "projectFilePath": "C:\\Users\\steve\\Documents\\projects\\jobHunt\\GeocachingHQ-SDCE\\Geocache-API\\Geocache-API.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\steve\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\steve\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\steve\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\steve\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\steve\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\steve\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
   "logs": []
 }
