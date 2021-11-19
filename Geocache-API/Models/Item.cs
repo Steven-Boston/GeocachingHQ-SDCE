@@ -16,5 +16,9 @@ namespace Geocache_API.Models
         public int Cache { get; set; }
 
         public string Description { get; set; }
+
+        public DateTime Activated { get; set; }
+        public DateTime Expires { get; set; }
+
     }
 }
