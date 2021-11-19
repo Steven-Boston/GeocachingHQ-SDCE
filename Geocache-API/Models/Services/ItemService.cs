@@ -36,6 +36,13 @@ namespace Geocache_API.Models.Services
                 .ToListAsync();
         }
 
+        public async Task<List<Item>> GetCacheItems(int CacheId)
+        {
+            return await _context.Items
+                .Where(item => item.Cache == CacheId)
+                .ToListAsync();
+        }
+
         public async Task<Item> GetItem(int Id)
         {
             return await _context.Items.FindAsync(Id);
