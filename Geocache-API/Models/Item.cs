@@ -13,7 +13,6 @@ namespace Geocache_API.Models
         [Required]
         public int Name { get; set; }
 
-        [Required]
         public int Cache { get; set; }
 
         public string Description { get; set; }
