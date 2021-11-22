@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Geocache_API.Data;
+using Geocache_API.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Geocache_API.Models.Services
 {
-    public class ItemService
+    public class ItemService : IItem
     {
         private GeoCacheDbContext _context { get; }
         public ItemService(GeoCacheDbContext context)

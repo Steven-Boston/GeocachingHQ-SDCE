@@ -1,13 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Geocache_API.Data;
+using Geocache_API.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace Geocache_API.Models.Services
 {
-    public class CacheService
+    public class CacheService : ICache
     {
         private GeoCacheDbContext _context { get; }
         public CacheService(GeoCacheDbContext context)
@@ -46,5 +48,7 @@ namespace Geocache_API.Models.Services
             _context.Entry(cache).State = EntityState.Deleted;
             await _context.SaveChangesAsync();
         }
+
+        
     }
 }

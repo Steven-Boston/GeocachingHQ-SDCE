@@ -13,7 +13,7 @@ namespace Geocache_API.Models.Interfaces
 
         Task<List<Cache>> GetCaches();
 
-        Task<Cache> UpadateCache(int Id, Cache cache);
+        Task<Cache> UpdateCache(int Id, Cache cache);
 
         void Delete(int Id);
     }
