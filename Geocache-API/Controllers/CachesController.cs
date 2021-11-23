@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Geocache_API.Data;
 using Geocache_API.Models;
+using Geocache_API.Models.Interfaces;
+using Geocache_API.Models.Services;
+using Geocache_API.Models.DTOs;
 
 namespace Geocache_API.Controllers
 {
@@ -14,25 +17,25 @@ namespace Geocache_API.Controllers
     [ApiController]
     public class CachesController : ControllerBase
     {
-        private readonly GeoCacheDbContext _context;
+        private readonly ICache _cacheService;
 
-        public CachesController(GeoCacheDbContext context)
+        public CachesController(ICache service)
         {
-            _context = context;
+            _cacheService = service;
         }
 
         // GET: api/Caches
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cache>>> GetCaches()
+        public async Task<ActionResult<IEnumerable<CacheDTO>>> GetCaches()
         {
-            return await _context.Caches.ToListAsync();
+            return await _cacheService.GetCaches();
         }
 
         // GET: api/Caches/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cache>> GetCache(int id)
+        public async Task<ActionResult<CacheDTO>> GetCache(int id)
         {
-            var cache = await _context.Caches.FindAsync(id);
+            var cache = await _cacheService.GetCache(id);
 
             if (cache == null)
             {
@@ -43,7 +46,6 @@ namespace Geocache_API.Controllers
         }
 
         // PUT: api/Caches/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCache(int id, Cache cache)
         {
@@ -52,34 +54,16 @@ namespace Geocache_API.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(cache).State = EntityState.Modified;
+            var updatedCache = await _cacheService.UpdateCache(id, cache);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CacheExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(updatedCache);
         }
 
         // POST: api/Caches
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Cache>> PostCache(Cache cache)
+        public async Task<ActionResult<CacheDTO>> PostCache(Cache cache)
         {
-            _context.Caches.Add(cache);
-            await _context.SaveChangesAsync();
+            await _cacheService.Create(cache);
 
             return CreatedAtAction("GetCache", new { id = cache.Id }, cache);
         }
@@ -87,22 +71,10 @@ namespace Geocache_API.Controllers
         // DELETE: api/Caches/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCache(int id)
-        {
-            var cache = await _context.Caches.FindAsync(id);
-            if (cache == null)
-            {
-                return NotFound();
-            }
-
-            _context.Caches.Remove(cache);
-            await _context.SaveChangesAsync();
+        { 
+            await _cacheService.Delete(id);
 
             return NoContent();
-        }
-
-        private bool CacheExists(int id)
-        {
-            return _context.Caches.Any(e => e.Id == id);
         }
     }
 }

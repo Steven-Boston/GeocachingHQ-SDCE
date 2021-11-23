@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Geocache_API.Models.DTOs;
 
 namespace Geocache_API.Models.Interfaces
 {
     public interface ICache
     {
-        Task<Cache> Create(Cache cache);
+        Task<CacheDTO> Create(Cache cache);
 
-        Task<Cache> GetCache(int Id);
+        Task<CacheDTO> GetCache(int Id);
 
-        Task<List<Cache>> GetCaches();
+        Task<List<CacheDTO>> GetCaches();
 
-        Task<Cache> UpdateCache(int Id, Cache cache);
+        Task<CacheDTO> UpdateCache(int Id, Cache cache);
 
-        void Delete(int Id);
+        Task Delete(int Id);
     }
 }

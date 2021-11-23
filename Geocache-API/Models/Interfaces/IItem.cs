@@ -21,6 +21,6 @@ namespace Geocache_API.Models.Interfaces
 
         Task<Item> MoveItem(int ItemId, int CacheId);
 
-        void DeleteItem(int Id);
+        Task DeleteItem(int Id);
     }
 }

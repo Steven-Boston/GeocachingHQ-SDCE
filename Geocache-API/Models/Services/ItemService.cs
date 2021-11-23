@@ -10,7 +10,7 @@ namespace Geocache_API.Models.Services
 {
     public class ItemService : IItem
     {
-        private GeoCacheDbContext _context { get; }
+        private GeoCacheDbContext _context;
         public ItemService(GeoCacheDbContext context)
         {
             _context = context;
@@ -64,7 +64,7 @@ namespace Geocache_API.Models.Services
             return await UpdateItem(ItemId, item);
         }
 
-        public async void DeleteItem(int Id)
+        public async Task DeleteItem(int Id)
         {
             Item item = await _context.Items.FindAsync(Id);
             _context.Entry(item).State = EntityState.Deleted;
