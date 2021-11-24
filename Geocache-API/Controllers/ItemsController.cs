@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Geocache_API.Data;
 using Geocache_API.Models;
+using Geocache_API.Models.DTOs;
+using Geocache_API.Models.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace Geocache_API.Controllers
 {
@@ -14,26 +14,32 @@ namespace Geocache_API.Controllers
     [ApiController]
     public class ItemsController : ControllerBase
     {
-        private readonly GeoCacheDbContext _context;
+        private readonly IItem _itemService;
 
-        public ItemsController(GeoCacheDbContext context)
+        public ItemsController(IItem service)
         {
-            _context = context;
+            _itemService = service;
         }
 
         // GET: api/Items
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Item>>> GetItems()
         {
-            return await _context.Items.ToListAsync();
+            return await _itemService.GetItems();
+        }
+
+        //GET: api/items/active
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<Item>>> GetActiveItems()
+        {
+            return await _itemService.GetActiveItems();
         }
 
         // GET: api/Items/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Item>> GetItem(int id)
         {
-            var item = await _context.Items.FindAsync(id);
-
+            var item = await _itemService.GetItem(id);
             if (item == null)
             {
                 return NotFound();
@@ -43,66 +49,58 @@ namespace Geocache_API.Controllers
         }
 
         // PUT: api/Items/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutItem(int id, Item item)
         {
             if (id != item.Id)
             {
-                return BadRequest();
+                return BadRequest("Id does not match request body.");
             }
+            var updatedItem = await _itemService.UpdateItem(id, item);
 
-            _context.Entry(item).State = EntityState.Modified;
+            return Ok(updatedItem);
+        }
 
-            try
+        [HttpPut("{id}/{cache}")]
+        public async Task<ActionResult<Item>> MoveItem(int id, int cache)
+        {
+            var thisItem = await _itemService.GetItem(id);
+            if(DateTime.Compare(thisItem.Expires, DateTime.Now) <= 0)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest("Expired items may not be assigned to a new cache.");
             }
 
-            return NoContent();
+            var updatedItem = await _itemService.MoveItem(id, cache);
+            
+            return Ok(updatedItem);
         }
 
         // POST: api/Items
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<Item>> PostItem(NewItemDTO item)
         {
-            _context.Items.Add(item);
-            await _context.SaveChangesAsync();
+            Regex checkName = new Regex("^[A-Za-z0-9 ]{1,50}$");
+            if(checkName.IsMatch(item.Name) == false)
+            {
+                return BadRequest("Item names must be no more than 50 characters and contain only letters, numbers, and spaces.");
+            }
 
-            return CreatedAtAction("GetItem", new { id = item.Id }, item);
+            List<Item> items = await _itemService.GetItems();
+            if (items.Exists(i => i.Name == item.Name))
+            {
+                return BadRequest("Item names must be unique.");
+            }
+
+            var newItem = await _itemService.Create(item);
+            return CreatedAtAction("GetItem", new { id = newItem.Id }, newItem);
         }
 
         // DELETE: api/Items/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(int id)
         {
-            var item = await _context.Items.FindAsync(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            _context.Items.Remove(item);
-            await _context.SaveChangesAsync();
-
+            await _itemService.DeleteItem(id);
             return NoContent();
-        }
-
-        private bool ItemExists(int id)
-        {
-            return _context.Items.Any(e => e.Id == id);
         }
     }
 }

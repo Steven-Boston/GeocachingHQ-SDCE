@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Geocache_API.Data;
 using Geocache_API.Models.Interfaces;
+using Geocache_API.Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,35 @@ namespace Geocache_API.Models.Services
             _context = context;
         }
 
-        public async Task<Item> Create(Item item)
+        public async Task<Item> Create(NewItemDTO itemData)
         {
+            DateTime expires = new DateTime(itemData.ExpireYear, itemData.ExpireMonth, itemData.ExpireDay);
+            
+            //check if intended cache is valid and update itemCount
+            if(itemData.Cache > 0)
+            {
+                Cache target = await _context.Caches.FindAsync(itemData.Cache);
+                if(target.itemCount >= 3)
+                {
+                    throw new InvalidOperationException("Target cache is full.");
+                }
+                else
+                {
+                    target.itemCount++;
+                    _context.Entry(target).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            
+            Item item = new Item()
+            {
+                Name = itemData.Name,
+                Description = itemData.Description,
+                Cache = itemData.Cache,
+                Activated = DateTime.Now,
+                Expires = expires
+            };
+            
             _context.Entry(item).State = EntityState.Added;
 
             await _context.SaveChangesAsync();
@@ -33,7 +61,7 @@ namespace Geocache_API.Models.Services
         public async Task<List<Item>> GetActiveItems()
         {
             return await _context.Items
-                .Where(item => item.Expires < DateTime.Now)
+                .Where(item => DateTime.Compare(item.Expires, DateTime.Now) > 0)
                 .ToListAsync();
         }
 

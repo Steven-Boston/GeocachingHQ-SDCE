@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Geocache_API.Models.DTOs;
 
 namespace Geocache_API.Models.Interfaces
 {
-    interface IItem
+    public interface IItem
     {
-        Task<Item> Create(Item item);
+        Task<Item> Create(NewItemDTO item);
 
         Task<List<Item>> GetItems();
 
