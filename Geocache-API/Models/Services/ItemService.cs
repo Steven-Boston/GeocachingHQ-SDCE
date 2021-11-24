@@ -87,6 +87,7 @@ namespace Geocache_API.Models.Services
 
         public async Task<Item> MoveItem(int ItemId, int CacheId)
         {
+            Item item = await _context.Items.FindAsync(ItemId);
             Cache target = await _context.Caches.FindAsync(CacheId);
             if (target.itemCount >= 3)
             {
@@ -94,16 +95,17 @@ namespace Geocache_API.Models.Services
             }
             else
             {
-                Cache departure = await _context.Caches.FindAsync(CacheId);
                 target.itemCount++;
-                departure.itemCount--;
-                _context.Entry(departure).State = EntityState.Modified;
+                if(item.Cache != 0)
+                {
+                    Cache departure = await _context.Caches.FindAsync(item.Cache);
+                    departure.itemCount--;
+                    _context.Entry(departure).State = EntityState.Modified;
+                }
                 _context.Entry(target).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
 
-
-            Item item = await _context.Items.FindAsync(ItemId);
             item.Cache = CacheId;
             return await UpdateItem(ItemId, item);
         }
@@ -125,13 +127,13 @@ namespace Geocache_API.Models.Services
         public async Task<List<Item>> ClearExpiredItems()
         {
             List<Item> expirees = await _context.Items
-                .Where(item => DateTime.Compare(item.Expires, DateTime.Now) <=0)
+                .Where(item => DateTime.Compare(item.Expires, DateTime.Now) <=0 && item.Cache != 0)
                 .ToListAsync();
 
-            expirees.ForEach(async exp =>
+            foreach(Item item in expirees)
             {
-                await RemoveItem(exp.Id);
-            });
+                await RemoveItem(item.Id);
+            };
 
             return await _context.Items
                 .Where(item => DateTime.Compare(item.Expires, DateTime.Now) <= 0)

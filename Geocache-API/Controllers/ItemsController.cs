@@ -60,8 +60,9 @@ namespace Geocache_API.Controllers
 
             return Ok(updatedItem);
         }
-
+        //Post: api/items/2/4
         [HttpPut("{id}/{cache}")]
+        //Endpoint for moving Item to a different cache
         public async Task<ActionResult<Item>> MoveItem(int id, int cache)
         {
             var thisItem = await _itemService.GetItem(id);
@@ -93,6 +94,22 @@ namespace Geocache_API.Controllers
 
             var newItem = await _itemService.Create(item);
             return CreatedAtAction("GetItem", new { id = newItem.Id }, newItem);
+        }
+
+        //PUT: api/Items/remove
+        [HttpPut("remove/{id}")]
+        //Removes item from the cache it is in, if applicable.
+        public async Task<ActionResult<Item>> RemoveItem(int id)
+        {
+            return await _itemService.RemoveItem(id);
+        }
+
+        //PUT: api/Items/clear
+        [HttpPut("clear")]
+        //Removes all expired items from caches
+        public async Task<ActionResult<List<Item>>> ClearExpiredItems()
+        {
+            return await _itemService.ClearExpiredItems();
         }
 
         // DELETE: api/Items/5
