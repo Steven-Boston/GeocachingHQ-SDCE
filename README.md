@@ -4,15 +4,15 @@ Author: Steven Boston
 
 This Geocache API is my solution for the coding exercise assigned as part of the hiring process with Geocaching HQ. The API was designed in Visual Studio using Entity Framework and the associated design patterns as the bones of the solution, with Enity Framework's built in SqlServer library as a database provider, Swashbuckle.AspNetCore to generate documentation and aid in testing functionality during development, and automated testing via Sqlite for Entity framework. 
 
-![swagger](images/Swagger.png)
+![swagger](Images/Swagger.png)
 
 ## Planning
 
-![clipboard](images/clipboard.png)
+![clipboard](Images/clipboard.png)
 
 Because this challenge was a solitary project with a short timeline, I chose to do written diagramming and notes in lieu of an online project board or diagramming software. The database model has two primary tables, **Caches** and **Items**. The goal of the abstraction is to create a representation of a list of Geocaches in various locations and track their contents. 
 
-![tables](images/tables.png)
+![tables](Images/tables.png)
 
 
 
@@ -34,7 +34,7 @@ The api has a number of endpoints to assist in managing both Caches and Items:
 
 - GET: /api/Caches
     - Returns a list of all caches, each with an array containing the items within. 
-    ![Insomnia](images/Insomnia.png)
+    ![Insomnia](Images/Insomnia.png)
 
 - GET: /api/Caches/{id}
     - Returns a single cache with the specified id in the same format as above. 
@@ -108,4 +108,4 @@ Please feel free to contact me via [LinkedIn](https://www.linkedin.com/in/steven
 
 Finally, special thanks to Primrose for her assistance on this project. 
 
-![primrose](images/primrose.png)
+![primrose](Images/primrose.png)
