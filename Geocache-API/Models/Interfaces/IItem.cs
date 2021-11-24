@@ -22,6 +22,10 @@ namespace Geocache_API.Models.Interfaces
 
         Task<Item> MoveItem(int ItemId, int CacheId);
 
+        Task<Item> RemoveItem(int itemId);
+
+        Task<List<Item>> ClearExpiredItems();
+
         Task DeleteItem(int Id);
     }
 }

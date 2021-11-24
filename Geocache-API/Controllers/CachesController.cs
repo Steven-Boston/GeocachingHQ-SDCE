@@ -61,11 +61,16 @@ namespace Geocache_API.Controllers
 
         // POST: api/Caches
         [HttpPost]
-        public async Task<ActionResult<CacheDTO>> PostCache(Cache cache)
+        public async Task<ActionResult<CacheDTO>> PostCache(NewCacheDTO cache)
         {
-            await _cacheService.Create(cache);
+            CacheDTO newCache = await _cacheService.Create(new Cache() { 
+                Name = cache.Name,
+                lat = cache.lat,
+                lon = cache.lon,
+                itemCount = 0
+            });
 
-            return CreatedAtAction("GetCache", new { id = cache.Id }, cache);
+            return CreatedAtAction("GetCache", new { id = newCache.Id }, newCache);
         }
 
         // DELETE: api/Caches/5

@@ -95,6 +95,20 @@ namespace Geocache_API.Controllers
             return CreatedAtAction("GetItem", new { id = newItem.Id }, newItem);
         }
 
+        //PUT: api/Items/remove
+        [HttpPut("remove/{id}")]
+        public async Task<ActionResult<Item>> RemoveItem(int id)
+        {
+            return await _itemService.RemoveItem(id);
+        }
+
+        //PUT: api/Items/clear
+        [HttpPut("clear")]
+        public async Task<ActionResult<List<Item>>> ClearExpiredItems()
+        {
+            return await _itemService.ClearExpiredItems();
+        }
+
         // DELETE: api/Items/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(int id)
