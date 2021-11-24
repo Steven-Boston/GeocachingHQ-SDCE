@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Geocache_API.Data;
 using Geocache_API.Models;
+using Geocache_API.Models.Interfaces;
+using Geocache_API.Models.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +24,6 @@ namespace Geocache_API
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<GeoCacheDbContext>(options =>
@@ -40,9 +40,11 @@ namespace Geocache_API
                     Version = "v1"
                 });
             });
+            services.AddTransient<ICache, CacheService>();
+            services.AddTransient<IItem, ItemService>();
+            services.AddControllers();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -55,10 +57,10 @@ namespace Geocache_API
                 options.RouteTemplate = "/api/{documentName}/swagger.json";
             });
 
-            app.UseSwaggerUI(options => 
+            app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/api/v1/swagger.json", "Geocache demo");
-                options.RoutePrefix = "";
+                options.RoutePrefix = string.Empty;
             });
 
             app.UseRouting();
@@ -69,7 +71,7 @@ namespace Geocache_API
 
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    await context.Response.WriteAsync("Welcome to GeoCacheAPI!");
                 });
             });
         }
